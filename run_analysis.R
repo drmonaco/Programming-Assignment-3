@@ -48,3 +48,5 @@ fulldata$activity = activity_labels[labels,2,drop = TRUE]
 #Melt by Activity
 fulldata_subject = melt(fulldata,id.vars = c("subject","activity"),measure.vars = t(features_names))
 fulldata_mean = dcast(fulldata_subject,subject + activity ~ variable, mean)
+
+write.table(fulldata_mean,"fulldata_mean.txt",row.names = FALSE)
