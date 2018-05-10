@@ -1,34 +1,19 @@
 Variables 
 
 
-activity_labels = read.table("UCI HAR Dataset/activity_labels.txt")
-features = read.table("UCI HAR Dataset/features.txt")
+activity_labels = Labels for the different activities and the numbers they correspond to
+features = Labels for the different measurement types and the number key they correspond to
 
-subject_test = read.table("UCI HAR Dataset/test/subject_test.txt")
-X_test = read.table("UCI HAR Dataset/test/X_test.txt")
-y_test = read.table("UCI HAR Dataset/test/y_test.txt")
-subject_train = read.table("UCI HAR Dataset/train/subject_train.txt")
-X_train = read.table("UCI HAR Dataset/train/X_train.txt")
-y_train = read.table("UCI HAR Dataset/train/y_train.txt")
+subject_test = The subject id matrix for the training set
+X_test = The actual measurements from the test data set
+y_test = The type of activity that correlates with the measurements from X_test for a given row
+subject_train = The subject id matrix for the training set
+X_train = The actual measurements from the train data set
+y_train = The type of activity that correlates with the measurements from X_train for a given row
 
-features_names = features[index,2,drop=FALSE]
+fulldata = The combined matrix of the test and training data sets with subject adn activity IDs
 
-X_train_subset = X_train[,index]
-X_test_subset = X_test[,index]
 
-train = cbind(subject_train,y_train,X_train_subset)
-test = cbind(subject_test,y_test,X_test_subset)
-fulldata = rbind(train,test)
+fulldata_subject = The melted matrix of merged training and test data with columns detailing ID, activity, measurement and single value
+fulldata_mean = The  matrix of merged training and test data with columns detailing ID, activity, measurement and single value with all replicates of a row averaged
 
-#Add descriptive variable names 
-colnames(fulldata) = c("subject","activity",t(features_names))
-
-#Add Activity Labels
-labels = match(fulldata$activity,activity_labels$V1)
-fulldata$activity = activity_labels[labels,2,drop = TRUE]
-
-#Melt by Activity
-fulldata_subject = melt(fulldata,id.vars = c("subject","activity"),measure.vars = t(features_names))
-fulldata_mean = dcast(fulldata_subject,subject + activity ~ variable, mean)
-
-write.table(fulldata_mean,"fulldata_mean.txt",row.names = FALSE)
